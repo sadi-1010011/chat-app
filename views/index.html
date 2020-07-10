@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PRIVAT-CHAT</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+	<style type="text/css">
+
+/* stylesheet for private chat by sadi @9-7-2020 */
+
+* { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	color: white;
+	background-color: black;
+	font-size: 18px;
+	font-weight: normal;
+	font-family: monospace;
+	overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+
+#chat-header {
+	position: sticky;
+	top: 0px;
+	margin: 6px 4px;
+	padding: 12px 20px;
+	border-bottom: 2px solid grey;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 8px;
+	z-index: 9;
+}
+
+#main-container {
+	/*border: 1px solid red;*/
+	position: absolute;
+	padding: 20px 8px;
+	width: 96%;
+	height: 90%;
+	font-family: courier, arial;
+	overflow-y: scroll;
+	z-index: 8
+}
+
+#mytool {
+	display: inline;
+	position: fixed;
+	right: 0px;
+	top: 12%;
+	margin-right: 20px;
+	padding: 3px 8px;
+	color: red;
+	font-weight: bold;
+	background-color: darkblue;
+	border: 1px solid white;
+	border-radius: 20%;
+	transition: 0.2s;
+	z-index: 99;
+}
+
+#mytool:hover {
+	background-color: blue;
+	color: white;
+}
+
+#chat-footer {
+	/*border: 1px solid white;*/
+	opacity: 0.6;
+	display: block;
+	width: 100%;
+	position: fixed;
+	bottom: 30px;
+}
+
+#usermsgbox {
+	display: block;
+	margin: 6px auto;
+	padding: 4px 6px;
+	border: none;
+	border-bottom: 2px solid yellowgreen;
+	border-radius: 8px;
+	color: white;
+	outline: none;
+	background-color: transparent;
+}
+
+.info, p.info {
+	background-color: rgba(40,60,10,0.5);
+	color: grey;
+	border-radius: 6px;
+	padding: 4px 8px;
+	margin: 6px auto;
+	text-align: center;
+	font-style: italic;
+	font-weight: lighter;
+	font-family: helvetica, arial;
+}
+
+.usertyping, span.usertyping {
+	background-color: transparent;
+	color: grey;
+	padding: 4px 0px;
+	margin: 4px auto;
+	text-align: center;
+	font-style: oblique;
+	font-weight: bold;
+	font-family: helvetica, arial;
+}
+
+	</style>
+</head>
+<body>
+
+<header id="chat-header">
+	user
+</header>
+
+<section id="main-container"></section>
+
+<span id="mytool" onclick="document.all.usermsgbox.focus();">@</span>
+
+<div id="chat-footer">
+	<input type="text" id="usermsgbox" name="usermsgbox">
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+//main chat container
+const chatbody = document.getElementById('main-container');
+
+//to show notifications and info
+function showchatinfo(msg) {
+	//console.log(msg);
+	let tempp = document.createElement('p');
+	let tempmsg = (msg) ? `- ${msg} -` : '- notification -';
+	tempp.classList.add('info');
+	tempp.append(tempmsg);
+	chatbody.append(tempp);
+}
+
+
+// showchatinfo('this is for debugging');
+// showchatinfo('sadi droped the chat')
+
+function setchat() {
+
+	//connect to socket
+	var socketlink = window.location.origin;
+	var socket = io.connect(socketlink) || io();
+	console.log('connecting to socket at '+socketlink);
+
+	//grab elements
+	const chatheader = document.getElementById('chat-header');
+	const mymsg = document.getElementById('usermsgbox');
+
+	//global variables
+	let lastmsg = "", chatname = "", totalusers = 0, chatholder;
+
+
+	/*handle sending events
+	========================*/
+
+	//send chat message
+	mymsg.addEventListener('change', function() {
+		//append to my chatbox
+		lastmsg = mymsg.value;
+		chatholder = document.createElement('p');
+		chatholder.append(lastmsg);
+		mymsg.value = "";
+		chatbody.append(chatholder);
+		scrollnewmessages();
+		//send msg to socket
+		socket.emit('newmessage', { msg: lastmsg });
+	});
+
+	//send change username event
+	chatheader.addEventListener('click', function() {
+		//change in my chat
+		chatname = prompt("user name : ", "user");
+		chatheader.innerHTML = (chatname) ? chatname : `user${totalusers}`;
+		//send name to socket
+		socket.emit('username', chatname);
+	});
+
+/*
+	//finally the user is typing .. message
+	mymsg.addEventListener('keypress', function() {
+		//console.log('user is typing..')
+		socket.emit('typing', true);
+		let typingtime = setTimeout(istyping, 1000);
+
+	});
+*/
+
+
+	/*handle recieving messages:
+	=============================*/
+
+	//new user joined
+	socket.on('newuser', function(data) {
+		totalusers = data.totalusers;
+		showchatinfo(data.uname+" joined the chat");
+		scrollnewmessages();
+	});
+
+	//incoming chats
+	socket.on('newmessage', function(data) {
+		chatholder = document.createElement('p');
+		chatholder.append(data.msgfrom+": "+data.msg);
+		chatbody.append(chatholder);
+		//scroll to last message
+		scrollnewmessages();
+	});
+
+	//username changelog
+	socket.on('username', function(data) {
+		let temp1 = data.oldname || 'user';
+		showchatinfo((data.oldname||'user')+" changed username to "+data.newname);
+		scrollnewmessages();
+	});
+
+	//disconnect event
+	socket.on('disconnected', function(data) {
+		totalusers--;
+		showchatinfo(data+" droped the chat");
+		scrollnewmessages();
+	});
+
+
+/*
+	//user is typing..
+	socket.on('typing', function(data) {
+		//console.log(data+' is typing..');
+		let temptyping = document.createElement('span');
+		temptyping.classList.add('usertyping');
+		chatbody.append(temptyping);
+	});
+*/
+
+	function scrollnewmessages() {
+		chatbody.scrollTop = chatbody.scrollHeight;
+	}
+
+	//ask for username
+	window.setTimeout(function() { chatheader.click(); }, 2000);
+
+}
+
+window.addEventListener('load', setchat, false);
+
+
+</script>
+</body>
+</html>
