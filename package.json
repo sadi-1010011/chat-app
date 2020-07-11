@@ -1,10 +1,10 @@
 {
   "name": "private_chat",
   "version": "1.0.0",
-  "description": "chat app for soulmates, direct one to one only communication",
+  "description": "chat app created for educational purpose",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
