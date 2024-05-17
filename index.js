@@ -44,7 +44,7 @@ io.on('connection', function(socket) {
 	=========================*/
 
 	//inform chatters about new chatter
-	/*console.log('new user connected : '+socket.username)*/
+	console.log('new user connected : '+socket.username)
 	socket.broadcast.emit('newuser', { uname: socket.username, totalusers: users });
 
 
@@ -57,11 +57,11 @@ io.on('connection', function(socket) {
 		socket.broadcast.emit('newmessage', { msgfrom: socket.username, msg: data.msg });
 	});
 
-/*	//user is typing..
+	//user is typing..
 	socket.on('typing', function(data) {
 		socket.broadcast.emit('typing', { typer: socket.username, typing: data });
 	});
-*/
+
 
 	//manage username change
 	socket.on('username', function(data) {

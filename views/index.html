@@ -191,7 +191,7 @@ function setchat() {
 		socket.emit('username', chatname);
 	});
 
-/*
+
 	//finally the user is typing .. message
 	mymsg.addEventListener('keypress', function() {
 		//console.log('user is typing..')
@@ -199,7 +199,7 @@ function setchat() {
 		let typingtime = setTimeout(istyping, 1000);
 
 	});
-*/
+
 
 
 	/*handle recieving messages:
@@ -236,7 +236,7 @@ function setchat() {
 	});
 
 
-/*
+
 	//user is typing..
 	socket.on('typing', function(data) {
 		//console.log(data+' is typing..');
@@ -244,7 +244,7 @@ function setchat() {
 		temptyping.classList.add('usertyping');
 		chatbody.append(temptyping);
 	});
-*/
+
 
 	function scrollnewmessages() {
 		chatbody.scrollTop = chatbody.scrollHeight;
