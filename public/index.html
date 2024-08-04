@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PUBLIC-CHAT</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap">
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="main-container">
+
+	<div id="chat-header" ondblclick="togglefullscreen();">
+		<h2 id="myusername"></h2>
+		<span id="totalonline" onmouseenter="toggledropdown();" onmouseleave="toggledropdown();">i'm online</span>
+		<div id="usersdropdown"></div>
+	</div>
+
+	<section id="chat-container"></section>
+
+	<div id="chat-footer">
+		<input type="text" id="usermsgbox" name="usermsgbox">
+	</div>
+
+	<!-- ======== OTHER ABSOLUTE INDEPENDANT ELEMENTS ======= -->
+
+	<!-- BLUR SCREEN -->
+	<div id="bg_blur"></div>
+
+	<!-- CUSTOMPROMPTBOX -->
+	<div id="custom_promptbox">
+		<p text>enter your name</p>
+		<div id="prompt_container">
+			<input type="text" id="enterusername" placeholder="user">
+			<span id="checkname">ok</span>
+		</div>
+	</div>
+
+	<!-- AUDIO FILES PRELOAD -->
+	<audio src="joined.ogg" id="audiojoined"></audio>
+	<audio src="recieved.ogg" id="audiorecieved"></audio>
+
+</div>
+
+<script>
+
+// console.log('-- inline script --');
+
+
+// let chatters = [];
+
+// chatters.push({id: '43iwf', name: 'sadi', bblcolor: bbl = 'red'});
+// chatters.push({id: 'l0984', name: 'mishal'});
+// chatters.push({id: '9erjk', name: 'dani'});
+
+// chatters.forEach(function(item) {
+// 	console.log('item id: '+item.id);
+// 	console.log('item name: '+item.name);
+// 	if(item.bblcolor) console.log('item color: '+item.bblcolor);
+// });
+
+// console.log(chatters.indexOf({}));
+
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="myuiux.js"></script>
+<script src="msgtime.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

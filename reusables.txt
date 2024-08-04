@@ -1,0 +1,60 @@
+//other code sections for later use
+
+//HTML
+-------
+	<span id="mytool" onclick="document.all.usermsgbox.focus();">@</span>
+
+	<p>this message is in bubble</p>
+	<p>this too</p>
+	<p>last message</p>
+	<p class="info">user droped the chat</p>
+	<p>another message</p>
+	<span class="usertyping">mishal is typing..</span>
+
+//CSS
+------
+#mytool {
+	display: none;
+	position: fixed;
+	right: 0px;
+	top: 12%;
+	margin-right: 20px;
+	padding: 3px 8px;
+	color: red;
+	font-weight: bold;
+	background-color: darkblue;
+	border: 1px solid white;
+	border-radius: 20%;
+	transition: 0.2s;
+	z-index: 99;
+}
+
+#mytool:hover {
+	background-color: blue;
+	color: white;
+}
+
+
+//JSCRIPT
+----------
+
+client:
+-------
+	// //send change username event
+	// chatheader.addEventListener('click', function() {
+	// 	//change in my chat
+	// 	chatname = prompt("user name : ", "user");
+	// 	chatheader.innerHTML = (chatname) ? chatname : `user${totalusers}`;
+	// 	//send name to socket
+	// 	socket.emit('username', chatname);
+	// });
+
+server:
+------
+	//manage username change
+	// socket.on('username', function(data) {
+	// 	prevusername = socket.username;
+	// 	socket.username = (data) ? data : `user${users}`;
+	// 	socket.broadcast.emit('username', { oldname: prevusername, newname: data });
+	// 	//console.log("debug infro prevusername : "+prevusername);
+	// });
