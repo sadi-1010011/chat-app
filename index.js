@@ -25,7 +25,7 @@ app.get('/', function(req,res) {
 });
 
 //listen to requests and sockets
-let server = app.listen(PORT, function() { console.log('server running at port : '+PORT); });
+let server = http.listen(PORT, function() { console.log('server running at port : '+PORT); });
 const io = require('socket.io')(server);
 
 //chat users object
